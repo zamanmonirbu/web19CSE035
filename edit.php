@@ -1,92 +1,72 @@
 <?php
-$conn=mysqli_connect('localhost','root','','cse');
+include 'database.php';
 
-if(isset($_GET['id'])){
-     $getid=$_GET['id'];
-    $sql="SELECT * FROM product WHERE id=$getid";
-    $query=mysqli_query($conn,$sql);
-    $data=mysqli_fetch_assoc($query);
-
-    $id         =$data['id'];
-    $name      =$data['name'];
-    $description       =$data['description'];
-    $quantity          =$data['quantity'];
-    $price          =$data['price'];
-    $expire_date          =$data['expire_date'];
+if(isset($_GET['editid'])){
+    $id=$_GET['editid'];
 }
+$sql="SELECT *FROM product WHERE id=$id";
+$result=mysqli_query($conn,$sql);
 
+$row=mysqli_fetch_assoc($result);
+$name=$row['name'];
+$description=$row['description'];
+$quantity=$row['quantity'];
+$price=$row['price'];
+$expire_date=$row['expire_date'];
 
-if(isset($_POST['edit'])){
-    $iid=$_POST['edit'];
-    $nname=$_POST['name'];
-    $ddescription=$_POST['description'];
-    $qquantity=$_POST['quantity'];
-    $pprice=$_POST['price'];
-    $eexpire_date=$_POST['expire_date'];
-    
-    echo "Id number is:" .$iid;
-    $sql1="UPDATE product SET name='$nname',description='$ddescription',quantity='$qquantity',price='$pprice',expire_date='$eexpire_date' WHERE id='$iid' ";
-     
-    if(mysqli_query($conn,$sql1)==TRUE){
-                header('location:view.php');
-                echo "Data update";
+if(isset($_POST['submit'])){
+    $name=$_POST['name'];
+    $description=$_POST['description'];
+    $quantity=$_POST['quantity'];
+    $price=$_POST['price'];
+    $expire_date=$_POST['expire_date'];
 
-    }
-    else{
-        echo "Data not update";
-    }
-
+$sql="UPDATE product SET name='$name',description='$description',quantity='$quantity',price='$price',expire_date='$expire_date' WHERE  id='$id'";
+$result=mysqli_query($conn,$sql);
+if(!$result){
+    die(mysqli_error($conn));
 }
-
-
+else{
+   // echo "update successfully";
+    header('location:index.php');
+    }
+}
 ?>
-<html>
+
+<!doctype html>
+<html lang="en">
 <head>
-    <style>
-        .formation{
-            width:40%;
-            margin:auto;
-            border: 5px solid green;
-            text-align: center;
-            font-size:20px;
-            border-radius:5px;
-        }
-        .insert{
-            font-size:20px;
-            border-radius:10px;
-            width: 90px;
-            
-        }
-    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
-<body style="background-color: #f2f2f2;">
 
-   <div class="formation">
-                <h1>Insert Product Information.</h1>
-            <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST">
-            Name : 
-                <input type="text" name="name" value="<?php echo $name;
- ?>"><br><br>
-                Description : 
-                <input type="text" name="description" value="<?php echo $description;
- ?>"><br><br>
-                Quantity : 
-                <input type="text" name="quantity" value="<?php echo $quantity;
- ?>"><br><br>
-                Price : 
-                <input type="text" name="price" value="<?php echo $price;
- ?>"><br><br>
-                Expire_date : 
-                <input type="text" name="expire_date" value="<?php echo $expire_date;
- ?>"><br><br>
-                
-                <input class="insert" type="submit" name="edit" value="<?php echo $id."Update the Value"?>"  style="color:white;background-color:green;">
-               
-            </form>
-    </div>
+<body>
 
+<form action="" method="POST" class="border shadow p-5" style="margin-left:25%;width:50%;margin-top:75px;border-radius:5px">
+        <div class="form-group">
+            <label>Name</label>
+            <input type="text" value="<?php echo $name ?>" class="form-control" placeholder="Enter name" name="name">
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <input type="text" value="<?php echo $description ?>" class="form-control" placeholder="Enter description" name="description">
+        </div>
+        <div class="form-group">
+            <label>Quantity</label>
+            <input type="text" value="<?php echo $quantity ?>" class="form-control" placeholder="Enter quantity" name="quantity">
+        </div>
+        <div class="form-group">
+            <label>Price</label>
+            <input type="text" value="<?php echo $price ?>" class="form-control" placeholder="Enter price" name="price">
+       </div>
+        <div class="form-group">
+            <label>Expire_date</label>
+            <input type="date" value="<?php echo $expire_date ?>" class="form-control" placeholder="Enter expire_date" name="expire_date">
+       </div>
+        <br>          
+        <button type="submit" class="btn btn-primary" name="submit">Submit</button>
+    </form>
 </body>
 </html>
-
-
-
